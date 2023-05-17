@@ -1,6 +1,7 @@
 from tkinter import *
 import tkinter.font as tkFont
 from tkinter import messagebox
+import json
 
 win = Tk()
 win.configure(bg="grey")
@@ -8,6 +9,10 @@ win.title("Julie Birthday Hire")
 
 
 # Functions Start
+
+def write_json (data, filename="AS91896_AS91897/entry_saves.json"):
+    with open (filename, 'w') as f:
+        json.dump(data, f, indent=4)
 
 def focused(event, msg): # Function for when entries are clicked on
     if event.widget.get() == msg: # Get entry from entry box and checks if they're the default placeholder message
@@ -56,7 +61,12 @@ def submit():
             break # Breaks out of While True Loop
         
 
-        print(customer_name, recipt_number, item_hired, number_of_items) # Debug feature to see entries before appending them to a grid on entries window
+        with open ("AS91896_AS91897/entry_saves.json") as json_file:
+            data = json.load(json_file)
+            data.append(submission_list)
+        
+        write_json(data)
+
         break # Stops While Loop
 
 
@@ -123,7 +133,7 @@ def set_up():
 
 title_font = tkFont.Font(family="Helvetica",size=24,weight="bold") # Makes a preset font that is of the Helvetica style, size 24 and bold
 button_font = tkFont.Font(family="Helvetica", size=16, weight="bold") # Makes a preset font that is of the Helvetica style, size 16 and bold
-normal_font = tkFont.Font(family="Helvetica",size=10,weight="bold") # Makes a preset font that is of the Helvetica style, size 10 and bold
+normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold") # Makes a preset font that is of the Helvetica style, size 10 and bold
 
 ### Font Configuration End
 
@@ -155,31 +165,30 @@ title.grid(row=0, column=1, sticky="nsew") # Creates the title label in the GUI 
 
 
 ### Entries Boxes Start
-entries_frame.columnconfigure((0, 4), weight=1) # Makes columns 0 and 4 take up as much space as possible while being equal to each other
-entries_frame.columnconfigure(2, weight=3) # Makes columns 2 take up as much space as possible, weight=3 so it'll taek up 3 times as much as columns 0 and 4
+entries_frame.columnconfigure(2, weight=1) # Makes columns 2 take up as much space as possible
 
-customer_name_entry = Entry(entries_frame, font=normal_font, fg="grey", width=34) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
+customer_name_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
 customer_name_entry.insert(0, "Enter Your Full Name") # Inserts the text "Enter Your Full Name" into the entry box
 customer_name_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Your Full Name")) # When entry box is clicked on, execute function focused (Ln.12)
 customer_name_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Your Full Name")) # When entry box is clicked off, execute function unfocused (Ln.17)
 customer_name_entry.grid(row=0, column=1) # Creates the entry box in the actual GUI
 
 
-recipt_number_entry = Entry(entries_frame, font=normal_font, fg="grey", width=34) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
+recipt_number_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
 recipt_number_entry.insert(0, "Enter Your Receipt Number") # Inserts the text "Enter Your Receipt Number" into the entry box
 recipt_number_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Your Receipt Number")) # When entry box is clicked on, execute function focused (Ln.12)
 recipt_number_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Your Receipt Number")) # When entry box is clicked off, execute function unfocused (Ln.17)
 recipt_number_entry.grid(row=0, column=3) # Creates the entry box in the actual GUI
 
 
-item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=34) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
+item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
 item_hired_entry.insert(0, "Enter The Item Hired") # Inserts the text "Enter The Item Hired" into the entry box
 item_hired_entry.bind('<FocusIn>', lambda e: focused(e, "Enter The Item Hired")) # When entry box is clicked on, execute function focused (Ln.12)
 item_hired_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter The Item Hired")) # When entry box is clicked off, execute function unfocused (Ln.17)
 item_hired_entry.grid(row=1, column=1, pady=(20, 0)) # Creates the entry box in the actual GUI
 
 
-num_of_item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=34) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
+num_of_item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
 num_of_item_hired_entry.insert(0, "Enter Amount Of Items Hired : 1 - 500") # Inserts the text "Enter Amounut Of Items Hired : 1 - 500" into the entry box
 num_of_item_hired_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Amount Of Items Hired : 1 - 500")) # When entry box is clicked on, execute function focused (Ln.12)
 num_of_item_hired_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Amount Of Items Hired : 1 - 500")) # When entry box is clicked off, execute function unfocused (Ln.17)
@@ -212,7 +221,7 @@ screen_x, screen_y = win.winfo_screenwidth(), win.winfo_screenheight() #Grabs de
 
 
 # Window Geometry Calculations
-win_x = int(screen_x / 3) # Deciding window width based on screen size, so no matter what display, window will always take up 33.333%
+win_x = int(screen_x / 2) # Deciding window width based on screen size, so no matter what display, window will always take up 33.333%
 win_y = int(screen_y / 4) # Deciding window height based on screen size, so no matter what display, window will always take up 33.333%
 
 

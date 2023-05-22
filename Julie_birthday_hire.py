@@ -4,8 +4,9 @@ from tkinter import messagebox
 import json
 
 win = Tk()
-win.configure(bg="grey")
+win.configure(bg="SkyBlue1")
 win.title("Julie Birthday Hire")
+
 
 
 # Functions Start
@@ -29,17 +30,17 @@ def submit():
     while True:
         # Obtain all user entries from entry boxes
         customer_name = customer_name_entry.get()
-        recipt_number = recipt_number_entry.get()
+        receipt_number = receipt_number_entry.get()
         item_hired = item_hired_entry.get()
         number_of_items = num_of_item_hired_entry.get()
 
         # Appends all results to "submission_list"
         submission_list = []
         submission_list.append(customer_name)
-        submission_list.append(recipt_number)
+        submission_list.append(receipt_number)
         submission_list.append(item_hired)
         submission_list.append(number_of_items)
-
+        
 
         # Checks if user entries fit the conditions
 
@@ -47,10 +48,9 @@ def submit():
             messagebox.showerror(title="Name Error", message="Please enter your full name") # Shows Error Box with the text "Please enter your full name"
             break # Breaks out of While True Loop
 
-        elif recipt_number == "Enter Your Receipt Number" or "": # Checks if placeholder text is still there or if it's blank
+        elif receipt_number == "Enter Your Receipt Number" or "": # Checks if placeholder text is still there or if it's blank
             messagebox.showerror(title="Receipt Number Error", message="Please enter a receipt number") # Shows Error Box with the text "Please Enter a receipt number"
             break # Breaks out of While True Loop
-
 
         elif item_hired == "Enter The Item Hired" or "": # Checks if placeholder text is still there or if it's blank
             messagebox.showerror(title="Item Error", message="Please enter the item hired") # Shows Error Box with the text "Please enter the item hired"
@@ -60,19 +60,54 @@ def submit():
             messagebox.showerror(title="No. of Item Error", message="Please enter the amount of items hired") # Shows Error Box with the text "Please enter the amount of items hired"
             break # Breaks out of While True Loop
         
+        elif int(number_of_items) < 0 or int(number_of_items) > 500:
+            messagebox.showerror(title="No. of Item Error", message="The amount of items hired must be between 0 and 500") # Shows Error Box with the text "Please enter the amount of items hired"
+            break # Breaks out of While True Loop
+
+        keys_list = ["Fullname", "Receipt Number", "Item Hired", "Number of items"]
+        submission_dict = {}
+        for key in keys_list:
+            for value in submission_list:
+                submission_dict[key] = value
+                submission_list.remove(value)
+                break
 
         with open ("AS91896_AS91897/entry_saves.json") as json_file:
             data = json.load(json_file)
-            data.append(submission_list)
-        
+            data.append(submission_dict)
+
         write_json(data)
+        try:
+            if win2:
+                entries_set_up()
+                print("Setup Attempted")
+            else:
+                print("Else Passed")
+                pass
+        except:
+            print("Except Passed")
+            pass
+
+
+        messagebox.showinfo(title="Success!", message="You've successfully sumbitted your results")
+
+        customer_name_entry.delete(0, "end")
+        receipt_number_entry.delete(0, "end")
+        item_hired_entry.delete(0, "end")
+        num_of_item_hired_entry.delete(0, "end")
+
+        customer_name_entry.insert(0, "Enter Your Full Name")
+        receipt_number_entry.insert(0, "Enter Your Receipt Number")
+        item_hired_entry.insert(0, "Enter The Item Hired")
+        num_of_item_hired_entry.insert(0, "Enter Amount Of Items Hired : 1 - 500")
+
+        item_hired_entry.configure(fg="grey"), num_of_item_hired_entry.configure(fg="grey"), receipt_number_entry.configure(fg="grey"), customer_name_entry.configure(fg="grey")
 
         break # Stops While Loop
 
 
 def new_window(): # Function to make new window
     try: # Using try since if the variable "password_win" or "win2" doesn't exist yet it'll return an exception
-        print(password_win.winfo_exists())
         if password_win.winfo_exists() == 0: # Only Execute code below if password_win doesn't exist
             if win2.winfo_exists() == 0: # Only Execute code below if win2 doesn't exist
                 win2.deiconify() # deiconify them if they're withdrawn or iconified
@@ -82,7 +117,6 @@ def new_window(): # Function to make new window
         password_checker() # Activates password_checker function
 
         
-
 def password_checker():
     global password_win
     def password_check(): # Function to check password
@@ -119,10 +153,42 @@ def password_checker():
 
 
 def set_up():
-    global win2 # Makes variable "win2" accessible from anywhere
+    global win2
     win2 = Toplevel() # Creates a new window linked to the variable win2
     win2.title("Julie Birthday Hire Entries") # Sets the title of win2 window to "Julie Birthday Hire Entries"
+    win2.configure(bg="bisque")
     win2.geometry(f"{win_x}x{win_y}+{margin_x}+{margin_y}") # sets the geometry of the window, uses the same values as the main window so it'll be the same size as the main window
+    
+    entries_set_up()    
+
+    
+def entries_set_up():
+    for widget in win2.winfo_children():
+        if isinstance(widget, Widget):
+            widget.destroy()
+    
+    name_label = Label(win2, font=normal_font, text="Full Name", bg="bisque3")
+    receipt_num_label = Label(win2, font=normal_font, text="Receipt Number", bg="bisque3")
+    item_hired_label = Label(win2, font=normal_font, text="Item Hired", bg="bisque3")
+    num_of_item_hired_label = Label(win2, font=normal_font, text="Number of Items Hired", bg="bisque3")
+
+
+    name_label.grid(row=0, column=0, sticky="ew", ipadx=20, ipady=3)
+    receipt_num_label.grid(row=0, column=1, sticky="ew", ipadx=20, ipady=3)
+    item_hired_label.grid(row=0, column=2, sticky="ew", ipadx=20, ipady=3)
+    num_of_item_hired_label.grid(row=0, column=3, sticky="ew", ipadx=20, ipady=3)
+
+
+    row = 1
+    with open ("AS91896_AS91897/entry_saves.json") as json_file:
+        data = json.load(json_file)
+        length = len(data)
+        for i in range(0, length):
+            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Fullname"]).grid(column=0, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Receipt Number"]).grid(column=1, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Item Hired"]).grid(column=2, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Number of items"]).grid(column=3, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            row += 1    
 
 
 # Functions End
@@ -131,9 +197,10 @@ def set_up():
 
 ### Font Configuration Start
 
-title_font = tkFont.Font(family="Helvetica",size=24,weight="bold") # Makes a preset font that is of the Helvetica style, size 24 and bold
+title_font = tkFont.Font(family="Helvetica",size=28,weight="bold") # Makes a preset font that is of the Helvetica style, size 28 and bold
 button_font = tkFont.Font(family="Helvetica", size=16, weight="bold") # Makes a preset font that is of the Helvetica style, size 16 and bold
-normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold") # Makes a preset font that is of the Helvetica style, size 10 and bold
+normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold",slant="italic") # Makes a preset font that is of the Helvetica style, size 13 and bold
+
 
 ### Font Configuration End
 
@@ -144,9 +211,9 @@ normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold") # Makes a pr
 win.columnconfigure(0, weight=1) # Makes Column 0 take up all the space it can
 win.rowconfigure(2, weight=1) # Makes Row 2 take up all the space it can
 
-title_frame = Frame(win, padx=15, pady=15, bg="grey") # Creating a frame to keep the title, basically dividing the main window up into individual boxes that can contain widgets
-entries_frame = Frame(win, padx=15, pady=15, bg="grey") # Creating a frame inside the main window to keep the entrie boxes
-buttons_frame = Frame(win, padx=15, pady=15, bg="grey") # Creating a frame inside the main window to keep the buttons
+title_frame = Frame(win, padx=15, bg="cyan4") # Creating a frame to keep the title, basically dividing the main window up into individual boxes that can contain widgets
+entries_frame = Frame(win, padx=15, pady=15, bg="cyan4") # Creating a frame inside the main window to keep the entrie boxes
+buttons_frame = Frame(win, padx=15, pady=15, bg="cyan4") # Creating a frame inside the main window to keep the buttons
 
 title_frame.grid(column=0, row=0, sticky="ew") # Layout the frames in the main window using a grid format, since column = 0 and row = 0 so it'll be the highest element and positioned to the left
 entries_frame.grid(column=0, row=1, sticky="ew") # Layout the frames in the main window using a grid format, sticky="ew" stands for east and west, filling out the frame to the left and right
@@ -158,43 +225,44 @@ buttons_frame.grid(column=0, row=2, sticky="news") # Layout the frames in the ma
 ### Title Start
 
 title_frame.columnconfigure((0, 2), weight=1) # Configures columns 0 and 2 to take up as much space as possible whlist being equal to each other
-title = Label(title_frame, text="Julie Birthday Hire", font=title_font, bg="grey") # Creates a Labal that has the text "Julie Birthday Hire" using the font preset title_font with a background colour of grey
-title.grid(row=0, column=1, sticky="nsew") # Creates the title label in the GUI and makes it fill out the frame
+title = Label(title_frame, text="Julie Birthday Hire", font=title_font, bg="cyan4") # Creates a Labal that has the text "Julie Birthday Hire" using the font preset title_font with a background colour of grey
+title.grid(row=0, column=1, sticky="nsew", pady=(15, 0)) # Creates the title label in the GUI and makes it fill out the frame
 
 ### Title Start
 
 
 ### Entries Boxes Start
-entries_frame.columnconfigure(2, weight=1) # Makes columns 2 take up as much space as possible
+entries_frame.columnconfigure((0,4), weight=1) # Makes columns 2 take up as much space as possible
+entries_frame.columnconfigure(2, weight=2) # Makes columns 2 take up as much space as possible
 
-customer_name_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
+customer_name_entry = Entry(entries_frame, font=normal_font, fg="grey", width=33) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
 customer_name_entry.insert(0, "Enter Your Full Name") # Inserts the text "Enter Your Full Name" into the entry box
 customer_name_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Your Full Name")) # When entry box is clicked on, execute function focused (Ln.12)
 customer_name_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Your Full Name")) # When entry box is clicked off, execute function unfocused (Ln.17)
 customer_name_entry.grid(row=0, column=1) # Creates the entry box in the actual GUI
 
 
-recipt_number_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
-recipt_number_entry.insert(0, "Enter Your Receipt Number") # Inserts the text "Enter Your Receipt Number" into the entry box
-recipt_number_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Your Receipt Number")) # When entry box is clicked on, execute function focused (Ln.12)
-recipt_number_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Your Receipt Number")) # When entry box is clicked off, execute function unfocused (Ln.17)
-recipt_number_entry.grid(row=0, column=3) # Creates the entry box in the actual GUI
+receipt_number_entry = Entry(entries_frame, font=normal_font, fg="grey", width=33) # Configures a entry box that shows inputted text as grey and uses the font preset normal font (Ln.125)
+receipt_number_entry.insert(0, "Enter Your Receipt Number") # Inserts the text "Enter Your Receipt Number" into the entry box
+receipt_number_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Your Receipt Number")) # When entry box is clicked on, execute function focused (Ln.12)
+receipt_number_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Your Receipt Number")) # When entry box is clicked off, execute function unfocused (Ln.17)
+receipt_number_entry.grid(row=0, column=3) # Creates the entry box in the actual GUI
 
 
-item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
+item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=33) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
 item_hired_entry.insert(0, "Enter The Item Hired") # Inserts the text "Enter The Item Hired" into the entry box
 item_hired_entry.bind('<FocusIn>', lambda e: focused(e, "Enter The Item Hired")) # When entry box is clicked on, execute function focused (Ln.12)
 item_hired_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter The Item Hired")) # When entry box is clicked off, execute function unfocused (Ln.17)
 item_hired_entry.grid(row=1, column=1, pady=(20, 0)) # Creates the entry box in the actual GUI
 
 
-num_of_item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=32) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
+num_of_item_hired_entry = Entry(entries_frame, font=normal_font, fg="grey", width=33) # Configures a entry box that shows inputted text as grey ad uses the font preset normal font (Ln.125)
 num_of_item_hired_entry.insert(0, "Enter Amount Of Items Hired : 1 - 500") # Inserts the text "Enter Amounut Of Items Hired : 1 - 500" into the entry box
 num_of_item_hired_entry.bind('<FocusIn>', lambda e: focused(e, "Enter Amount Of Items Hired : 1 - 500")) # When entry box is clicked on, execute function focused (Ln.12)
 num_of_item_hired_entry.bind('<FocusOut>', lambda e: unfocused(e, "Enter Amount Of Items Hired : 1 - 500")) # When entry box is clicked off, execute function unfocused (Ln.17)
 num_of_item_hired_entry.grid(row=1, column=3, pady=(20, 0)) # Creates the entry box in the actual GUI
 
-
+ 
 ### Entries Boxes End
 
 
@@ -221,7 +289,7 @@ screen_x, screen_y = win.winfo_screenwidth(), win.winfo_screenheight() #Grabs de
 
 
 # Window Geometry Calculations
-win_x = int(screen_x / 2) # Deciding window width based on screen size, so no matter what display, window will always take up 33.333%
+win_x = int(screen_x / 2.5) # Deciding window width based on screen size, so no matter what display, window will always take up 33.333%
 win_y = int(screen_y / 4) # Deciding window height based on screen size, so no matter what display, window will always take up 33.333%
 
 

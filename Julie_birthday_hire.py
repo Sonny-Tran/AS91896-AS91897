@@ -1,12 +1,13 @@
 from tkinter import *
 import tkinter.font as tkFont
 from tkinter import messagebox
+from tkinter.messagebox import askyesno
+import random
 import json
 
 win = Tk()
 win.configure(bg="SkyBlue1")
 win.title("Julie Birthday Hire")
-
 
 
 # Functions Start
@@ -25,85 +26,91 @@ def unfocused(event, msg): # Functions for when entries are clicked off
         event.widget.configure(fg="grey") # If entry from entry box is black, make the foreground grey, making the text grey
         event.widget.insert(0, msg) # Insert placeholder message back into entry box
 
+def quit_win():
+    answer = askyesno(title='Confirmation',
+                message='Are you sure that you want to quit?')
+    if answer:
+        win.quit()
 
 def submit(): 
-    while True:
-        # Obtain all user entries from entry boxes
-        customer_name = customer_name_entry.get()
-        receipt_number = receipt_number_entry.get()
-        item_hired = item_hired_entry.get()
-        number_of_items = num_of_item_hired_entry.get()
+    answer = askyesno(title='Confirmation',
+                    message='Are you sure that you want to submit?')
+    if answer:
+        while True:
+            # Obtain all user entries from entry boxes
+            customer_name = customer_name_entry.get()
+            receipt_number = receipt_number_entry.get()
+            item_hired = item_hired_entry.get()
+            number_of_items = num_of_item_hired_entry.get()
 
-        # Appends all results to "submission_list"
-        submission_list = []
-        submission_list.append(customer_name)
-        submission_list.append(receipt_number)
-        submission_list.append(item_hired)
-        submission_list.append(number_of_items)
-        
+            # Appends all results to "submission_list"
+            submission_list = []
+            submission_list.append(customer_name)
+            submission_list.append(receipt_number)
+            submission_list.append(item_hired)
+            submission_list.append(number_of_items)
+            submission_list.append(random.uniform(0, 999))
+            
 
-        # Checks if user entries fit the conditions
+            # Checks if user entries fit the conditions
 
-        if customer_name == "Enter Your Full Name" or "": # Checks if placeholder text is still there or if it's blank
-            messagebox.showerror(title="Name Error", message="Please enter your full name") # Shows Error Box with the text "Please enter your full name"
-            break # Breaks out of While True Loop
+            if customer_name == "Enter Your Full Name" or "": # Checks if placeholder text is still there or if it's blank
+                messagebox.showerror(title="Name Error", message="Please enter your full name") # Shows Error Box with the text "Please enter your full name"
+                break # Breaks out of While True Loop
 
-        elif receipt_number == "Enter Your Receipt Number" or "": # Checks if placeholder text is still there or if it's blank
-            messagebox.showerror(title="Receipt Number Error", message="Please enter a receipt number") # Shows Error Box with the text "Please Enter a receipt number"
-            break # Breaks out of While True Loop
+            elif receipt_number == "Enter Your Receipt Number" or "": # Checks if placeholder text is still there or if it's blank
+                messagebox.showerror(title="Receipt Number Error", message="Please enter a receipt number") # Shows Error Box with the text "Please Enter a receipt number"
+                break # Breaks out of While True Loop
 
-        elif item_hired == "Enter The Item Hired" or "": # Checks if placeholder text is still there or if it's blank
-            messagebox.showerror(title="Item Error", message="Please enter the item hired") # Shows Error Box with the text "Please enter the item hired"
-            break # Breaks out of While True Loop
+            elif item_hired == "Enter The Item Hired" or "": # Checks if placeholder text is still there or if it's blank
+                messagebox.showerror(title="Item Error", message="Please enter the item hired") # Shows Error Box with the text "Please enter the item hired"
+                break # Breaks out of While True Loop
 
-        elif number_of_items == "Enter Amount Of Items Hired : 1 - 500" or "": # Checks if placeholder text is still there or if it's blank
-            messagebox.showerror(title="No. of Item Error", message="Please enter the amount of items hired") # Shows Error Box with the text "Please enter the amount of items hired"
-            break # Breaks out of While True Loop
-        
-        elif int(number_of_items) < 0 or int(number_of_items) > 500:
-            messagebox.showerror(title="No. of Item Error", message="The amount of items hired must be between 0 and 500") # Shows Error Box with the text "Please enter the amount of items hired"
-            break # Breaks out of While True Loop
+            elif number_of_items == "Enter Amount Of Items Hired : 1 - 500" or "": # Checks if placeholder text is still there or if it's blank
+                messagebox.showerror(title="No. of Item Error", message="Please enter the amount of items hired") # Shows Error Box with the text "Please enter the amount of items hired"
+                break # Breaks out of While True Loop
+            
+            elif int(number_of_items) < 0 or int(number_of_items) > 500:
+                messagebox.showerror(title="No. of Item Error", message="The amount of items hired must be between 0 and 500") # Shows Error Box with the text "Please enter the amount of items hired"
+                break # Breaks out of While True Loop
 
-        keys_list = ["Fullname", "Receipt Number", "Item Hired", "Number of items"]
-        submission_dict = {}
-        for key in keys_list:
-            for value in submission_list:
-                submission_dict[key] = value
-                submission_list.remove(value)
-                break
+            keys_list = ["Fullname", "Receipt Number", "Item Hired", "Number of items", "id"]
+            submission_dict = {}
+            for key in keys_list:
+                for value in submission_list:
+                    submission_dict[key] = value
+                    submission_list.remove(value)
+                    break
 
-        with open ("AS91896_AS91897/entry_saves.json") as json_file:
-            data = json.load(json_file)
-            data.append(submission_dict)
+            with open ("AS91896_AS91897/entry_saves.json") as json_file:
+                data = json.load(json_file)
+                data.append(submission_dict)
 
-        write_json(data)
-        try:
-            if win2:
-                entries_set_up()
-                print("Setup Attempted")
-            else:
-                print("Else Passed")
+            write_json(data)
+            try:
+                if win2:
+                    entries_set_up()
+                    print("Setup Attempted")
+                else:
+                    print("Else Passed")
+                    pass
+            except:
+                print("Except Passed")
                 pass
-        except:
-            print("Except Passed")
-            pass
 
 
-        messagebox.showinfo(title="Success!", message="You've successfully sumbitted your results")
+            messagebox.showinfo(title="Success!", message="You've successfully sumbitted your results")
 
-        customer_name_entry.delete(0, "end")
-        receipt_number_entry.delete(0, "end")
-        item_hired_entry.delete(0, "end")
-        num_of_item_hired_entry.delete(0, "end")
+            for widget in entries_frame.winfo_children():
+                widget.delete(0, "end")
+                widget.configure(fg="grey")
 
-        customer_name_entry.insert(0, "Enter Your Full Name")
-        receipt_number_entry.insert(0, "Enter Your Receipt Number")
-        item_hired_entry.insert(0, "Enter The Item Hired")
-        num_of_item_hired_entry.insert(0, "Enter Amount Of Items Hired : 1 - 500")
+            customer_name_entry.insert(0, "Enter Your Full Name")
+            receipt_number_entry.insert(0, "Enter Your Receipt Number")
+            item_hired_entry.insert(0, "Enter The Item Hired")
+            num_of_item_hired_entry.insert(0, "Enter Amount Of Items Hired : 1 - 500")
 
-        item_hired_entry.configure(fg="grey"), num_of_item_hired_entry.configure(fg="grey"), receipt_number_entry.configure(fg="grey"), customer_name_entry.configure(fg="grey")
-
-        break # Stops While Loop
+            break # Stops While Loop
 
 
 def new_window(): # Function to make new window
@@ -157,9 +164,25 @@ def set_up():
     win2 = Toplevel() # Creates a new window linked to the variable win2
     win2.title("Julie Birthday Hire Entries") # Sets the title of win2 window to "Julie Birthday Hire Entries"
     win2.configure(bg="bisque")
+    win2.columnconfigure((4,6), weight=1)
     win2.geometry(f"{win_x}x{win_y}+{margin_x}+{margin_y}") # sets the geometry of the window, uses the same values as the main window so it'll be the same size as the main window
     
     entries_set_up()    
+
+def delete_row(id):
+    answer = messagebox.askyesno(message="Do you want to delete this Entry?", title="Delete Confirmation")
+    row = 0
+    if answer:
+        with open ("AS91896_AS91897/entry_saves.json") as json_file:
+            data = json.load(json_file)
+            length = len(data)
+            for i in range(0, length):
+                if data[i]["id"] == id:
+                    print("success")
+                    del data[row]
+                    write_json(data)
+                    row += 1    
+    win2.lift()
 
     
 def entries_set_up():
@@ -188,6 +211,7 @@ def entries_set_up():
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Receipt Number"]).grid(column=1, row=row, sticky="ew", ipady=3, pady=(5, 0))
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Item Hired"]).grid(column=2, row=row, sticky="ew", ipady=3, pady=(5, 0))
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Number of items"]).grid(column=3, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            Button(win2, font=normal_font, bg="bisque3", text="Delete Row", command=lambda d=data[i]["id"]: delete_row(d)).grid(column=5, row=row, sticky="ew", pady=(5, 0),)
             row += 1    
 
 
@@ -200,7 +224,6 @@ def entries_set_up():
 title_font = tkFont.Font(family="Helvetica",size=28,weight="bold") # Makes a preset font that is of the Helvetica style, size 28 and bold
 button_font = tkFont.Font(family="Helvetica", size=16, weight="bold") # Makes a preset font that is of the Helvetica style, size 16 and bold
 normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold",slant="italic") # Makes a preset font that is of the Helvetica style, size 13 and bold
-
 
 ### Font Configuration End
 
@@ -272,7 +295,7 @@ buttons_frame.columnconfigure((0,2,4,6), weight=1) # Makes columns 0, 2, 4, 6 ta
 buttons_frame.rowconfigure((0,2), weight=1) # Makes rows 0 and 2 take up as much space as they can while being equal, pushes widgets in row 1 to the centre
 
 
-quit_button = Button(buttons_frame, text="Quit", font=button_font, command=win.quit, width=10) # Creates button with the text "Quit" which quits the program when clicked
+quit_button = Button(buttons_frame, text="Quit", font=button_font, command=quit_win, width=10) # Creates button with the text "Quit" which quits the program when clicked
 quit_button.grid(row=1, column=1) # Creates the button in the GUI
 
 submit_entries = Button(buttons_frame, text="Submit", font=button_font, command=submit, width=10) # Creates button with the text "Submit" which gets entries and checks if they're vaild when clicked (Ln.23)

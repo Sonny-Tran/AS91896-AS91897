@@ -1,1 +1,16 @@
-[]
+[
+    {
+        "Fullname": "Sonny Tran",
+        "Receipt Number": "1",
+        "Item Hired": "Poppies",
+        "Number of items": "12",
+        "id": 15.080105430998907
+    },
+    {
+        "Fullname": "Tanav Prasad",
+        "Receipt Number": "2",
+        "Item Hired": "Balloons",
+        "Number of items": "20",
+        "id": 323.6015699974197
+    }
+]

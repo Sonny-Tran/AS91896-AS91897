@@ -49,8 +49,8 @@ def submit():
             submission_list.append(receipt_number)
             submission_list.append(item_hired)
             submission_list.append(number_of_items)
-            submission_list.append(random.uniform(0, 999))
-            
+
+            submission_dict = {"Fullname" : customer_name, "Receipt Number" : receipt_number, "Item Hired" : item_hired, "Number Of Items" : number_of_items}
 
             # Checks if user entries fit the conditions
 
@@ -74,13 +74,6 @@ def submit():
                 messagebox.showerror(title="No. of Item Error", message="The amount of items hired must be between 0 and 500") # Shows Error Box with the text "Please enter the amount of items hired"
                 break # Breaks out of While True Loop
 
-            keys_list = ["Fullname", "Receipt Number", "Item Hired", "Number of items", "id"]
-            submission_dict = {}
-            for key in keys_list:
-                for value in submission_list:
-                    submission_dict[key] = value
-                    submission_list.remove(value)
-                    break
 
             with open ("AS91896_AS91897/entry_saves.json") as json_file:
                 data = json.load(json_file)
@@ -171,19 +164,19 @@ def set_up():
 
 def delete_row(id):
     answer = messagebox.askyesno(message="Do you want to delete this Entry?", title="Delete Confirmation")
-    row = 0
+    
     if answer:
         with open ("AS91896_AS91897/entry_saves.json") as json_file:
             data = json.load(json_file)
-            length = len(data)
-            for i in range(0, length):
-                if data[i]["id"] == id:
-                    print("success")
-                    del data[row]
-                    write_json(data)
-                    row += 1    
-    win2.lift()
+            print("success")
+            print(id)
+            del data[id]
+            write_json(data)
+            entries_set_up()
+            win2.lift()
 
+def row_info(widget):
+    return widget.grid_info()['row']
     
 def entries_set_up():
     for widget in win2.winfo_children():
@@ -210,8 +203,8 @@ def entries_set_up():
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Fullname"]).grid(column=0, row=row, sticky="ew", ipady=3, pady=(5, 0))
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Receipt Number"]).grid(column=1, row=row, sticky="ew", ipady=3, pady=(5, 0))
             Label(win2, font=normal_font, bg="bisque3", text=data[i]["Item Hired"]).grid(column=2, row=row, sticky="ew", ipady=3, pady=(5, 0))
-            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Number of items"]).grid(column=3, row=row, sticky="ew", ipady=3, pady=(5, 0))
-            Button(win2, font=normal_font, bg="bisque3", text="Delete Row", command=lambda d=data[i]["id"]: delete_row(d)).grid(column=5, row=row, sticky="ew", pady=(5, 0),)
+            Label(win2, font=normal_font, bg="bisque3", text=data[i]["Number Of Items"]).grid(column=3, row=row, sticky="ew", ipady=3, pady=(5, 0))
+            Button(win2, font=normal_font, bg="bisque3", text="Delete Row", command=lambda d=i: delete_row(d)).grid(column=5, row=row, sticky="ew", pady=(5, 0),)
             row += 1    
 
 
@@ -223,7 +216,7 @@ def entries_set_up():
 
 title_font = tkFont.Font(family="Helvetica",size=28,weight="bold") # Makes a preset font that is of the Helvetica style, size 28 and bold
 button_font = tkFont.Font(family="Helvetica", size=16, weight="bold") # Makes a preset font that is of the Helvetica style, size 16 and bold
-normal_font = tkFont.Font(family="Helvetica",size=13,weight="bold",slant="italic") # Makes a preset font that is of the Helvetica style, size 13 and bold
+normal_font = tkFont.Font(family="Helvetica",size=14,weight="bold",slant="italic") # Makes a preset font that is of the Helvetica style, size 13 and bold
 
 ### Font Configuration End
 
@@ -312,8 +305,8 @@ screen_x, screen_y = win.winfo_screenwidth(), win.winfo_screenheight() #Grabs de
 
 
 # Window Geometry Calculations
-win_x = int(screen_x / 2.5) # Deciding window width based on screen size, so no matter what display, window will always take up 33.333%
-win_y = int(screen_y / 4) # Deciding window height based on screen size, so no matter what display, window will always take up 33.333%
+win_x = int(screen_x / 2) # Deciding window width based on screen size, so no matter what display, window will always take up 50%
+win_y = int(screen_y / 4) # Deciding window height based on screen size, so no matter what display, window will always take up 25%
 
 
 margin_x = int(screen_x / 2 - win_x / 2) # Adding padding so window will always appear in the middle

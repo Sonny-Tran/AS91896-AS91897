@@ -107,7 +107,7 @@ def submit():
                 messagebox.showerror(title="No. of Item Error", message="Your hired amount of items can only contain integers (Whole Numbers)")
                 break
 
-            elif int(number_of_items) < 0 or int(number_of_items) > 501: # Checks if the entry is between 1 and 500
+            elif int(number_of_items) <= 0 or int(number_of_items) > 500: # Checks if the entry is between 1 and 500
                 messagebox.showerror(title="No. of Item Error", message="The amount of items hired must be between 1 and 500") # Shows Error Box with the text "Please enter the amount of items hired"
                 break # Breaks out of While True Loop
 

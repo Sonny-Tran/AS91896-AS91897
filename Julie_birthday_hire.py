@@ -69,7 +69,7 @@ def submit():
                 else:
                     pass
             # Customer Name Entry Vaildation Checks
-            if customer_name == "Enter Your Full Name" or customer_name.isspace() or " ": # Checks if the entry is still the placeholder, is only whitespace, or is empty
+            if customer_name == "Enter Your Full Name" or customer_name.isspace() or "": # Checks if the entry is still the placeholder, is only whitespace, or is empty
                 messagebox.showerror(title="Full Name Error", message="Please enter your full name") 
                 break 
 
